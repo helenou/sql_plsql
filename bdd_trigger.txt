@@ -1,0 +1,32 @@
+﻿autoincrementer id :
+====================
+
+create sequence id_seq;
+
+
+create trigger trg_id
+      before insert on USERS
+      for each row
+    begin
+      select id_seq.nextval
+        into :new.id
+        from dual;
+    end;
+    /
+
+	
+	url="jdbc:oracle:thin:@server:port:base"
+
+        url="jdbc:oracle:thin@localhost:1521/xe"
+
+
+
+
+Context ctx = null; 
+Connection con = null; 
+Statement stmt = null; 
+ResultSet rs = null;
+
+ try{ 
+ctx = new InitialContext(); 
+DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/TestDB"); 

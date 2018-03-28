@@ -1,0 +1,400 @@
+﻿set SERVEROUTPUT on
+declare
+v_name varchar2(20):= NULL;
+v_number number(5);
+
+begin
+v_number:=100;
+null;
+
+select first_name|| ' '||last_name into v_name from employees where EMPLOYEE_ID=100;
+DBMS_OUTPUT.PUT_LINE('Le nom est: '||v_name);
+DBMS_OUTPUT.PUT_LINE(NVL(v_name, 'NON RENSEIGNE'));
+
+end;
+
+
+=====
+
+set SERVEROUTPUT on
+declare
+event varchar2(15);
+
+begin
+event:=q'!Father's day!';
+DBMS_OUTPUT.PUT_LINE('3rd Sunday in June is: ' ||event);
+event:=q'[Mother's day]';
+DBMS_OUTPUT.PUT_LINE('2nd Sunday in May is: ' ||event);
+DBMS_OUTPUT.PUT_LINE(q'[ap'ostrophe]');
+
+end;
+
+
+=====
+
+//set SERVEROUTPUT on
+variable emp_salary NUMBER;
+    set AUTOPRINT ON
+declare
+    empno NUMBER(6) := &empno;
+
+begin
+    select salary into :emp_salary
+    from employees where employee_id= empno;
+end;
+/
+
+=====
+
+set SERVEROUTPUT on 
+SET VERIFY OFF 
+	define lname = 'Urman'; 
+
+DECLARE 
+	fname VARCHAR2(25); 
+
+BEGIN 
+
+SELECT first_name INTO fname FROM employees 
+WHERE last_name = '&lname'; 
+
+DBMS_OUTPUT.PUT_line(fname); 
+
+END; 
+
+
+====
+
+set SERVEROUTPUT on 
+
+DECLARE
+    outer_variable varchar2(20) := 'GLOBAL VARIABLE';
+
+BEGIN 
+    DECLARE 
+        inner_variable VARCHAR2(20) := 'LOCAL VARIABLE'; 
+    BEGIN
+        DBMS_OUTPUT.PUT_line(inner_variable); 
+        DBMS_OUTPUT.PUT_line(outer_variable); 
+
+    END;
+
+    DBMS_OUTPUT.PUT_line(outer_variable); 
+    END;
+
+=====
+
+alter session set nls_date_format = 'DD-MON-YYYY HH24:MI:SS';
+alter session set nls_date_format = 'DD-MM-YYYY';
+
+set SERVEROUTPUT on 
+<<outer>>
+DECLARE
+   father_name VARCHAR2(20) := 'Patrick';
+   date_of_birth DATE := TO_DATE('20-04-1972', 'dd-mm-yyyy');
+
+BEGIN 
+    DECLARE 
+        child_name VARCHAR2(20) := 'Mike'; 
+        date_of_birth DATE := TO_DATE('12-12-2002', 'dd-mm-yyyy');
+    BEGIN
+        DBMS_OUTPUT.PUT_line('Father''s name: ' ||father_name); 
+        DBMS_OUTPUT.PUT_line('Date of birth: '||outer.date_of_birth); 
+        DBMS_OUTPUT.PUT_line('Child''s Name: ' ||child_name);
+        DBMS_OUTPUT.PUT_line('Date of birth: ' ||date_of_birth);
+   END;
+
+    DBMS_OUTPUT.PUT_line('Date of birth: '||date_of_birth); 
+    END;
+
+======
+
+set SERVEROUTPUT on 
+
+DECLARE
+loop_counter number(10) :=0;
+
+BEGIN 
+    --null;
+    for i in 1..10 loop
+    loop_counter := loop_counter+1;    
+    DBMS_OUTPUT.PUT_LINE(i);
+    end loop;
+    DBMS_OUTPUT.PUT_LINE(loop_counter);
+    
+END;
+
+=====
+
+create table employeesbis as select * from employees;
+DECLARE empno employees.employee_id%TYPE := 176; 
+rows_deleted VARCHAR2(30) ;
+BEGIN 
+    DELETE FROM employeesbis WHERE employee_id = empno; 
+    rows_deleted := (SQL%ROWCOUNT ||' row deleted.'); 
+    DBMS_OUTPUT.PUT_LINE(rows_deleted);
+END; 
+
+select * from employeesbis
+where employee_id= 176;
+
+=====
+
+create table employeesbis as select * from employees;
+DECLARE empno employees.employee_id%TYPE := 176; 
+rows_deleted VARCHAR2(30) ;
+BEGIN 
+    DELETE FROM employeesbis WHERE employee_id = empno; 
+    rows_deleted := (SQL%ROWCOUNT ||' row deleted.'); 
+    DBMS_OUTPUT.PUT_LINE(rows_deleted);
+END; 
+
+select * from employeesbis
+--where employee_id= 176;
+
+-----***----
+VARIABLE rows_deleted VARCHAR2(30) 
+DECLARE 
+	empno employees.employee_id%TYPE := 176; 
+BEGIN 
+	DELETE FROM employees WHERE employee_id = empno; 
+	:rows_deleted := (SQL%ROWCOUNT ||' row deleted.'); 
+END;
+
+=====
+
+DECLARE myage number := 33;
+
+BEGIN 
+
+if myage < 11
+then
+    dbms_output.put_line('i am a child');
+else 
+    dbms_output.put_line('i am not a child');
+end if;
+
+END;
+
+====
+
+MARDI:
+*******
+------------------------------------27/03/2018-------  
+
+SET SERVEROUT ON 
+declare 
+	v_maxsal employees.salary%type; 
+	v_moysal employees.salary%type; 
+begin 
+	select max(salary),avg(salary) into v_maxsal,v_moysal from employees; 
+	DBMS_OUTPUT.PUT_line('v_maxsal : '||v_maxsal); 
+	DBMS_OUTPUT.PUT_line('le salaire moyen est de : '||v_moysal); 
+end; 
+
+
+
+
+====
+
+select fn, in into v_fn, v_in
+from emp
+
+===
+select sysdate-10 from dual;
+
+===
+SUITE DOC MACHINE
+
+
+
+
+
+
+
+---------------------------------28/03/2018---------
+
+declare counter NUMBER(2) :=0; counter2 NUMBER(2) :=0; 
+BEGIN 
+	null; 
+	DBMS_OUTPUT.PUT_LINE('****************Début boucle 1 outer_loop'); 
+
+<<outer_loop>>
+LOOP 
+	counter := counter + 1; 
+	exit when counter>10; 
+
+	DBMS_OUTPUT.PUT_LINE('****************Dans boucle 1  itération '||counter); 
+
+	counter2 := 0; 
+LOOP 
+	counter2 := counter2 + 1; 
+	exit when counter2>10 or 	counter*counter2 between 10 and 20; 
+	DBMS_OUTPUT.PUT_LINE('****************Dans boucle 2  	counter*counter2 =  '||counter*counter2); 
+	exit outer_loop when counter*counter2 > 6;
+ --sortie de la boucle 1 dès que counter*counter2>6 
+	END LOOP; 
+
+END LOOP outer_loop; END; /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---- matrice --------------------------------------------------
+set SERVEROUT on
+DECLARE
+  TYPE TYP_NUMBER_MATRIX IS TABLE OF NUMBER INDEX BY BINARY_INTEGER ;
+  TYPE MATRIX IS TABLE OF TYP_NUMBER_MATRIX INDEX BY BINARY_INTEGER ;
+  var MATRIX ;
+BEGIN
+  FOR i IN 1 .. 3 LOOP
+    FOR j IN 1 .. 3 LOOP
+     var(i)(j) := i * j ;
+     DBMS_OUTPUT.PUT_LINE('matrice 3*3' ||var);
+    END LOOP;
+  END LOOP;
+END;
+
+--------------------Affichage matrice simple--------------------
+
+set SERVEROUT on
+DECLARE
+    var number(10) :=null;
+BEGIN
+  FOR i IN 1 .. 3 LOOP
+    FOR j IN 1 .. 3 LOOP
+     var := i * j ;
+     DBMS_OUTPUT.PUT('|' ||var);
+    END LOOP;
+    dbms_output.put_line(' ');
+  END LOOP;
+END;
+
+////
+Procédure PL/SQL terminée.
+
+|1|2|3 
+|2|4|6 
+|3|6|9
+
+////
+
+
+========
+---------------CREATION DE TYPE-----------------------------
+set SERVEROUTPUT on
+DECLARE
+-- creer un type record
+    type emp_record_type IS RECORD
+        (last_name employees.last_name%TYPE,
+        job_id employees.job_id%TYPE,
+        salary employees.salary%TYPE);
+-- creer une variable du type record
+    emp_record emp_record_type;
+    emp_rec employees%ROWTYPE;
+BEGIN
+
+SELECT last_name, job_id, salary
+INTO emp_record
+from employees
+WHERE employee_id=100;
+
+DBMS_OUTPUT.PUT_LINE(emp_record.last_name);
+
+SELECT *
+INTO emp_rec 
+from employees
+WHERE employee_id=100;
+
+DBMS_OUTPUT.PUT_LINE(emp_rec.employee_id ||' ' ||emp_rec.job_id||' ' ||emp_rec.last_name);
+
+END;
+
+======
+
+CREATE TABLE emp_table AS SELECT * FROM EMPLOYEES;
+TRUNCATE TABLE emp_table;
+
+select * from emp_table;
+
+DROP TABLE emp_table;
+CREATE TABLE emp_table AS SELECT * FROM EMPLOYEES WHERE 1=0;
+
+select * from emp_table;
+
+----
+-------------Add specific records to table-----------------------------------
+
+DECLARE
+    emp_rec employees%ROWTYPE;
+BEGIN
+    select * into emp_rec from employees
+    where employee_id= &employee_number;
+    INSERT INTO emp_table(employee_id, first_name, last_name, email, job_id, manager_id, hire_date, salary, commission_pct, department_id)
+    VALUES (emp_rec.employee_id, emp_rec.first_name, emp_rec.last_name, emp_rec.email, emp_rec.job_id, emp_rec.manager_id, 
+    emp_rec.hire_date, emp_rec.salary, emp_rec.commission_pct, emp_rec.department_id);
+END;
+/
+
+----
+
+-------------Add ALL records to table----------------------------------------
+DECLARE
+    emp_rec employees%ROWTYPE;
+BEGIN
+    select * into emp_rec from employees
+    where employee_id= &employee_number;
+    INSERT INTO emp_table VALUES emp_rec;
+END;
+/
+
+----
+DECLARE
+    emp_rec emp_table%ROWTYPE;
+BEGIN
+    select employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, commission_pct, manager_id, department_id 
+    into emp_rec 
+    from employees
+    where employee_id= &employee_number;
+    INSERT INTO emp_table VALUES emp_rec;
+END;
+/
+
+====
+
+DECLARE 
+	TYPE emp_table_type IS TABLE OF employees%ROWTYPE index by PLS_INTEGER;
+	my_emp_table emp_table_type;
+	max_count number(3) := 104;
+
+BEGIN
+	FOR i IN 100..max_count LOOP
+		select * into my_emp_table(i) from employees
+		where employee_id= i;
+	END LOOP;
+
+	FOR i IN my_emp_table.FIRST..my_emp_table.LAST LOOP
+		DBMS_OUTPUT.PUT_LINE(my_emp_table(i).last_name);
+	END LOOP; 
+        
+	DBMS_OUTPUT.PUT_LINE(my_emp_table.first);
+        DBMS_OUTPUT.PUT_LINE(my_emp_table(100).first_name ||' '||my_emp_table(100).last_name);
+        DBMS_OUTPUT.PUT_LINE(my_emp_table.last);
+        DBMS_OUTPUT.PUT_LINE(my_emp_table(104).first_name || ' '||my_emp_table(104).last_name);
+        DBMS_OUTPUT.PUT_LINE(my_emp_table.count);
+        
+        my_emp_table.delete(103);
+        DBMS_OUTPUT.PUT_LINE(my_emp_table.count);
+END;
+
+
